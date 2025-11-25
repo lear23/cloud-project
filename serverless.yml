@@ -1,0 +1,84 @@
+org: lear23
+service: cloud-project
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  environment:
+    TODOS_TABLE: todos
+
+  apiGateway:
+    apiKeys:
+      - myApiKey
+    usagePlan:
+      quota:
+        limit: 1000
+        period: MONTH
+      throttle:
+        rateLimit: 10
+        burstLimit: 2
+
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    target: node20 
+    format: esm  
+
+functions:
+  getTodos:
+    handler: functions/GetTodos/index.handler
+    events:
+      - httpApi:
+          path: /todos
+          method: GET
+          private: true 
+
+  postTodos:
+    handler: functions/PostTodo/index.handler
+    events:
+      - httpApi:
+          path: /todos
+          method: POST
+          private: true 
+
+  deleteTodos:
+    handler: functions/DeleteTodo/index.handler
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: DELETE
+          private: true 
+
+  getOneTodo:
+    handler: functions/GetOneTodo/index.handler
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: GET
+          private: true 
+
+  logTodoEvents:
+    handler: functions/LogTodoEvents/index.handler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - todo.service
+
+resources:
+  Resources:
+    TodosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: todos
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
