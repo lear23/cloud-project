@@ -20,6 +20,21 @@ provider:
         rateLimit: 10
         burstLimit: 2
 
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.TODOS_TABLE}"
+        - Effect: Allow
+          Action:
+            - events:PutEvents
+          Resource: "arn:aws:events:${aws:region}:${aws:accountId}:event-bus/default"
+
 
 custom:
   esbuild:
