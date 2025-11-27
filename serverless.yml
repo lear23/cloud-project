@@ -32,7 +32,7 @@ functions:
   getTodos:
     handler: functions/GetTodos/index.handler
     events:
-      - httpApi:
+      - http:
           path: /todos
           method: GET
           private: true 
@@ -40,7 +40,7 @@ functions:
   postTodos:
     handler: functions/PostTodo/index.handler
     events:
-      - httpApi:
+      - http:
           path: /todos
           method: POST
           private: true 
@@ -48,7 +48,7 @@ functions:
   deleteTodos:
     handler: functions/DeleteTodo/index.handler
     events:
-      - httpApi:
+      - http:
           path: /todos/{id}
           method: DELETE
           private: true 
@@ -56,7 +56,7 @@ functions:
   getOneTodo:
     handler: functions/GetOneTodo/index.handler
     events:
-      - httpApi:
+      - http:
           path: /todos/{id}
           method: GET
           private: true 

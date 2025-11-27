@@ -6,7 +6,7 @@ const dynamo = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event) => {
   
-  if (event.requestContext.http.method !== "GET") {
+  if (event.httpMethod !== "GET") {
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -14,7 +14,7 @@ export const handler = async (event) => {
   }
 
   try {
-    const result = await dynamo.send(new ScanCommand({ TableName: "todos" }));
+    const result = await dynamo.send(new ScanCommand({ TableName: process.env.TODOS_TABLE }));
 
     return {
       statusCode: 200,
